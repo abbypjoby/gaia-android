@@ -62,7 +62,7 @@ public class NodeDetails extends AppCompatActivity {
         @Override
         protected List<Node> doInBackground(Void... params) {
             try {
-                final String url = "http://enteveed.us-east-2.elasticbeanstalk.com/node_health";
+                final String url = "https://pallathatta.herokuapp.com/node_health";
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
                 Node[] response = restTemplate.getForObject(url, Node[].class);

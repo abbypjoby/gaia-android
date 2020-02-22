@@ -59,7 +59,7 @@ public class Node {
         this.nodeType = nodeType;
     }
 
-    public Boolean getOn() {
+    public Boolean getIsOn() {
         return isOn;
     }
 
