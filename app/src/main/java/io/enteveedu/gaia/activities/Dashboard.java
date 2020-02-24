@@ -38,13 +38,14 @@ public class Dashboard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        new getAllNodesHealthTask().execute();
-
         developerButton = (Button) findViewById(R.id.developerButton);
         gateButton = (Button) findViewById(R.id.gateButton);
         textView = (TextView) findViewById(R.id.gateResponseTV);
         gifImageView = (GifImageView) findViewById(R.id.gateGif);
         progressBar = (ProgressBar) findViewById(R.id.progress_loader);
+
+        gateButton.setVisibility(View.INVISIBLE);
+        new getAllNodesHealthTask().execute();
 
         developerButton.setOnClickListener(new View.OnClickListener() {
             @Override
