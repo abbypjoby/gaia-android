@@ -1,11 +1,14 @@
 package io.enteveedu.gaia.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -26,6 +29,7 @@ public class Dashboard extends AppCompatActivity {
     private Button gateButton;
     private TextView textView;
     private GifImageView gifImageView;
+    private ProgressBar progressBar;
 
     private static List<Node> nodes = new ArrayList<>();
 
@@ -40,6 +44,7 @@ public class Dashboard extends AppCompatActivity {
         gateButton = (Button) findViewById(R.id.gateButton);
         textView = (TextView) findViewById(R.id.gateResponseTV);
         gifImageView = (GifImageView) findViewById(R.id.gateGif);
+        progressBar = (ProgressBar) findViewById(R.id.progress_loader);
 
         developerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,6 +58,8 @@ public class Dashboard extends AppCompatActivity {
         gateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                gateButton.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
                 if (nodes==null || nodes.isEmpty()){
                     new getAllNodesHealthTask().execute();
                 } else {
@@ -96,12 +103,14 @@ public class Dashboard extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(List<Node> nodes) {
-            if (nodes.isEmpty() || (nodes == null)){
+            if ((nodes == null) || nodes.isEmpty()){
                 textView.setText("No response from API");
             } else {
                 checkAndSetScreenBasedOnNodes(nodes);
                 textView.setText(nodes.get(0).toString());
             }
+            progressBar.setVisibility(View.INVISIBLE);
+            gateButton.setVisibility(View.VISIBLE);
         }
     }
 
