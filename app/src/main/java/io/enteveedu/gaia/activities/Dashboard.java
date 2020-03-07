@@ -1,9 +1,7 @@
 package io.enteveedu.gaia.activities;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,10 +12,6 @@ import android.widget.TextView;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import io.enteveedu.gaia.R;
 import io.enteveedu.gaia.model.Node;
@@ -31,7 +25,7 @@ public class Dashboard extends AppCompatActivity {
     private GifImageView gifImageView;
     private ProgressBar progressBar;
 
-    private static List<Node> nodes = new ArrayList<>();
+    private static Node node = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +39,7 @@ public class Dashboard extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progress_loader);
 
         gateButton.setVisibility(View.INVISIBLE);
+        gifImageView.setVisibility(View.INVISIBLE);
         new getAllNodesHealthTask().execute();
 
         developerButton.setOnClickListener(new View.OnClickListener() {
@@ -61,22 +56,23 @@ public class Dashboard extends AppCompatActivity {
             public void onClick(View view) {
                 gateButton.setVisibility(View.INVISIBLE);
                 progressBar.setVisibility(View.VISIBLE);
-                if (nodes==null || nodes.isEmpty()){
+                if (node == null){
                     new getAllNodesHealthTask().execute();
                 } else {
-                    if (nodes.stream().filter(id -> id.getNodeId().equals(1)).findFirst().get().getIsOn()){
+                    if (node != null && node.getIsOn() == 1){
                         new closeGate().execute();
                     }else {
                         new openGate().execute();
                     }
-                    nodes=null;
+                    node=null;
                 }
             }
         });
     }
 
-    public void checkAndSetScreenBasedOnNodes(List<Node> nodes){
-        if (nodes.stream().filter(id -> id.getNodeId().equals(1)).findFirst().get().getIsOn()){
+    public void checkAndSetScreenBasedOnNodes(Node node){
+        gifImageView.setVisibility(View.VISIBLE);
+        if (node != null && node.getIsOn() == 1){
             gateButton.setText("Close");
             gifImageView.setImageResource(R.drawable.open_gate);
         }else {
@@ -86,29 +82,28 @@ public class Dashboard extends AppCompatActivity {
     }
 
 
-    private class getAllNodesHealthTask extends AsyncTask<Void, Void, List<Node>> {
+    private class getAllNodesHealthTask extends AsyncTask<Void, Void, Node> {
         @Override
-        protected List<Node> doInBackground(Void... params) {
+        protected Node doInBackground(Void... params) {
             try {
-                final String url = "https://pallathatta.herokuapp.com/node_health";
+                final String url = "https://pallathatta.herokuapp.com/node/1";
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-                Node[] response = restTemplate.getForObject(url, Node[].class);
-                nodes = Arrays.asList(response);
-                System.out.println(nodes);
-                return nodes;
+                node = restTemplate.getForObject(url, Node.class);
+                System.out.println(node);
+                return node;
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return nodes;
+            return node;
         }
         @Override
-        protected void onPostExecute(List<Node> nodes) {
-            if ((nodes == null) || nodes.isEmpty()){
+        protected void onPostExecute(Node node) {
+            if ((node == null) || node.getId() == null){
                 textView.setText("No response from API");
             } else {
-                checkAndSetScreenBasedOnNodes(nodes);
-                textView.setText(nodes.get(0).toString());
+                checkAndSetScreenBasedOnNodes(node);
+                textView.setText(node.toString());
             }
             progressBar.setVisibility(View.INVISIBLE);
             gateButton.setVisibility(View.VISIBLE);
@@ -121,7 +116,7 @@ public class Dashboard extends AppCompatActivity {
         protected String doInBackground(Void... params) {
             String response = "closing";
             try {
-                final String url = "https://pallathatta.herokuapp.com/node/update?node_id=1&is_on=false";
+                final String url = "https://pallathatta.herokuapp.com/node/update?node_id=1&is_on=0";
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
                 response = restTemplate.getForObject(url, String.class);
@@ -145,7 +140,7 @@ public class Dashboard extends AppCompatActivity {
         protected String doInBackground(Void... params) {
             String response = "opening";
             try {
-                final String url = "https://pallathatta.herokuapp.com/node/update?node_id=1&is_on=true";
+                final String url = "https://pallathatta.herokuapp.com/node/update?node_id=1&is_on=1";
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
                 response = restTemplate.getForObject(url, String.class);

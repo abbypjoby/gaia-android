@@ -5,10 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.sql.Timestamp;
 
+import lombok.Data;
+
 /**
  * Created by z002r13 on 12/18/17.
  */
 
+@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Node {
 
@@ -25,56 +28,6 @@ public class Node {
     private String nodeType;
 
     @JsonProperty(value = "is_on")
-    private Boolean isOn;
+    private Integer isOn;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Timestamp getUpdatedTimestamp() {
-        return updatedTimestamp;
-    }
-
-    public void setUpdatedTimestamp(Timestamp updatedTimestamp) {
-        this.updatedTimestamp = updatedTimestamp;
-    }
-
-    public Integer getNodeId() {
-        return nodeId;
-    }
-
-    public void setNodeId(Integer nodeId) {
-        this.nodeId = nodeId;
-    }
-
-    public String getNodeType() {
-        return nodeType;
-    }
-
-    public void setNodeType(String nodeType) {
-        this.nodeType = nodeType;
-    }
-
-    public Boolean getIsOn() {
-        return isOn;
-    }
-
-    public void setOn(Boolean on) {
-        isOn = on;
-    }
-
-    @Override
-    public String toString() {
-        return "Node{" +
-                "id=" + id +
-                ", updatedTimestamp=" + updatedTimestamp +
-                ", nodeId=" + nodeId +
-                ", nodeType='" + nodeType + '\'' +
-                ", isOn=" + isOn +
-                '}';
-    }
 }

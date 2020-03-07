@@ -18,16 +18,17 @@
             android:id="@+id/gateGif"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
             android:layout_marginLeft="10dp"
-            android:src="@drawable/static_gate"/>
+            android:layout_marginTop="0dp"
+            android:cropToPadding="false"
+            android:src="@drawable/open_gate" />
 
         <Button
             android:id="@+id/gateButton"
-            android:layout_marginHorizontal="100dp"
-            android:layout_marginTop="50dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="100dp"
+            android:layout_marginTop="0dp"
             android:text="Open" />
 
         <ProgressBar

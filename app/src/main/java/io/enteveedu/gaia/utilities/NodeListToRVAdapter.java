@@ -57,7 +57,7 @@ public class NodeListToRVAdapter extends RecyclerView.Adapter<NodeListToRVAdapte
         TextView nodeUpdatedTime = holder.nodeUpdatedTime;
         nodeId.setText("ID : " + dataSet.get(listPosition).getNodeId().toString());
         nodeType.setText("Type : " + dataSet.get(listPosition).getNodeType().toString());
-        nodeHealth.setText("Health : " + ((dataSet.get(listPosition).getIsOn())?  "On / Active" : "Turned Off"));
+        nodeHealth.setText("Health : " + ((dataSet.get(listPosition).getIsOn())==1?  "On / Active" : "Turned Off"));
         nodeUpdatedTime.setText("Last Sync : " + dataSet.get(listPosition).getUpdatedTimestamp().toString());
     }
 
