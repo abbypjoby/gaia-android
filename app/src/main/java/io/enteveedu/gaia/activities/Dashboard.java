@@ -20,8 +20,11 @@ import pl.droidsonroids.gif.GifImageView;
 public class Dashboard extends AppCompatActivity {
 
     private Button developerButton;
-    private Button gateButton;
+    private Button stopButton;
+    private Button openButton;
+    private Button closeButton;
     private TextView textView;
+    private TextView gateStateTextView;
     private GifImageView gifImageView;
     private ProgressBar progressBar;
 
@@ -33,12 +36,15 @@ public class Dashboard extends AppCompatActivity {
         setContentView(R.layout.activity_dashboard);
 
         developerButton = (Button) findViewById(R.id.developerButton);
-        gateButton = (Button) findViewById(R.id.gateButton);
+        stopButton = (Button) findViewById(R.id.gateButton);
+        openButton = (Button) findViewById(R.id.openButton);
+        closeButton = (Button) findViewById(R.id.closeButton);
         textView = (TextView) findViewById(R.id.gateResponseTV);
+        gateStateTextView = (TextView) findViewById(R.id.gateState);
         gifImageView = (GifImageView) findViewById(R.id.gateGif);
         progressBar = (ProgressBar) findViewById(R.id.progress_loader);
 
-        gateButton.setVisibility(View.INVISIBLE);
+        stopButton.setVisibility(View.INVISIBLE);
         gifImageView.setVisibility(View.INVISIBLE);
         new getAllNodesHealthTask().execute();
 
@@ -51,19 +57,43 @@ public class Dashboard extends AppCompatActivity {
         });
 
 
-        gateButton.setOnClickListener(new View.OnClickListener() {
+        stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gateButton.setVisibility(View.INVISIBLE);
+                stopButton.setVisibility(View.INVISIBLE);
                 progressBar.setVisibility(View.VISIBLE);
                 if (node == null){
                     new getAllNodesHealthTask().execute();
                 } else {
-                    if (node != null && node.getIsOn() == 1){
-                        new closeGate().execute();
-                    }else {
-                        new openGate().execute();
-                    }
+                    new stopGate().execute();
+                    node=null;
+                }
+            }
+        });
+
+        openButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openButton.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
+                if (node == null){
+                    new getAllNodesHealthTask().execute();
+                } else {
+                    new openGate().execute();
+                    node=null;
+                }
+            }
+        });
+
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeButton.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
+                if (node == null){
+                    new getAllNodesHealthTask().execute();
+                } else {
+                    new closeGate().execute();
                     node=null;
                 }
             }
@@ -73,11 +103,13 @@ public class Dashboard extends AppCompatActivity {
     public void checkAndSetScreenBasedOnNodes(Node node){
         gifImageView.setVisibility(View.VISIBLE);
         if (node != null && node.getIsOn() == 1){
-            gateButton.setText("Close");
+            gateStateTextView.setText("Open");
             gifImageView.setImageResource(R.drawable.open_gate);
-        }else {
-            gateButton.setText("Open");
+        }else if (node != null && node.getIsOn() == 0){
+            gateStateTextView.setText("Close");
             gifImageView.setImageResource(R.drawable.close_gate);
+        }else {
+            gateStateTextView.setText("Stop");
         }
     }
 
@@ -106,7 +138,9 @@ public class Dashboard extends AppCompatActivity {
                 textView.setText(node.toString());
             }
             progressBar.setVisibility(View.INVISIBLE);
-            gateButton.setVisibility(View.VISIBLE);
+            openButton.setVisibility(View.VISIBLE);
+            closeButton.setVisibility(View.VISIBLE);
+            stopButton.setVisibility(View.VISIBLE);
         }
     }
 
@@ -141,6 +175,31 @@ public class Dashboard extends AppCompatActivity {
             String response = "opening";
             try {
                 final String url = "https://pallathatta.herokuapp.com/node/update?node_id=1&is_on=1";
+                RestTemplate restTemplate = new RestTemplate();
+                restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
+                response = restTemplate.getForObject(url, String.class);
+                System.out.println(response);
+                return response;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String response) {
+            new getAllNodesHealthTask().execute();
+            textView.setText(response);
+        }
+    }
+
+
+    private class stopGate extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... params) {
+            String response = "opening";
+            try {
+                final String url = "https://pallathatta.herokuapp.com/node/update?node_id=1&is_on=-1";
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
                 response = restTemplate.getForObject(url, String.class);
