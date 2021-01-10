@@ -2,12 +2,14 @@ package io.enteveedu.gaia.activities;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -34,6 +36,15 @@ public class Dashboard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
+        final SwipeRefreshLayout pullToRefresh = findViewById(R.id.pullToRefresh);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new getAllNodesHealthTask().execute();
+                pullToRefresh.setRefreshing(false);
+            }
+        });
 
         developerButton = (Button) findViewById(R.id.developerButton);
         stopButton = (Button) findViewById(R.id.gateButton);
@@ -103,11 +114,11 @@ public class Dashboard extends AppCompatActivity {
     public void checkAndSetScreenBasedOnNodes(Node node){
         gifImageView.setVisibility(View.VISIBLE);
         if (node != null && node.getIsOn() == 1){
-            gateStateTextView.setText("Open");
-            gifImageView.setImageResource(R.drawable.open_gate);
-        }else if (node != null && node.getIsOn() == 0){
             gateStateTextView.setText("Close");
             gifImageView.setImageResource(R.drawable.close_gate);
+        }else if (node != null && node.getIsOn() == 0){
+            gateStateTextView.setText("Open");
+            gifImageView.setImageResource(R.drawable.open_gate);
         }else {
             gateStateTextView.setText("Stop");
         }
