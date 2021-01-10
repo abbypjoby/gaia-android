@@ -150,7 +150,7 @@ public class Dashboard extends AppCompatActivity {
         protected String doInBackground(Void... params) {
             String response = "closing";
             try {
-                final String url = "https://pallathatta.herokuapp.com/node/update?node_id=1&is_on=0";
+                final String url = "https://pallathatta.herokuapp.com/node/update?node_id=1&is_on=1";
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
                 response = restTemplate.getForObject(url, String.class);
@@ -174,7 +174,7 @@ public class Dashboard extends AppCompatActivity {
         protected String doInBackground(Void... params) {
             String response = "opening";
             try {
-                final String url = "https://pallathatta.herokuapp.com/node/update?node_id=1&is_on=1";
+                final String url = "https://pallathatta.herokuapp.com/node/update?node_id=1&is_on=0";
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
                 response = restTemplate.getForObject(url, String.class);

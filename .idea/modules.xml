@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/gaia-android.iml" filepath="$PROJECT_DIR$/gaia-android.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/gaia-android-app.iml" filepath="$PROJECT_DIR$/app/gaia-android-app.iml" group="gaia-android/app" />
-      <module fileurl="file://$PROJECT_DIR$/gate-gaia-android.iml" filepath="$PROJECT_DIR$/gate-gaia-android.iml" group="gaia-android" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/gaia-android.iml" filepath="$PROJECT_DIR$/.idea/modules/gaia-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/gaia-android.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/gaia-android.app.iml" />
     </modules>
   </component>
 </project>
